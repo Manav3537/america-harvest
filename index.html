@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Rescue Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>America's Harvest</h1>
+            <p>Supplying food to those in need</p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="card">
+                    <h2>Donate Food</h2>
+                    <form id="donateForm">
+                        <div class="form-group">
+                            <label for="donorName">Organization Name</label>
+                            <input type="text" id="donorName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactPerson">Contact Person</label>
+                            <input type="text" id="contactPerson" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Pickup Address</label>
+                            <input type="text" id="address" required placeholder="Click on map to auto-fill">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodType">Food Type</label>
+                            <select id="foodType" required>
+                                <option value="">Select food type</option>
+                                <option value="prepared">Prepared Meals</option>
+                                <option value="produce">Fresh Produce</option>
+                                <option value="dairy">Dairy Products</option>
+                                <option value="baked">Baked Goods</option>
+                                <option value="packaged">Packaged Foods</option>
+                                <option value="frozen">Frozen Items</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Estimated Quantity (servings/lbs)</label>
+                            <input type="number" id="quantity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry">Expiration/Best By Date</label>
+                            <input type="date" id="expiry" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="urgency">Pickup Urgency</label>
+                            <select id="urgency" required>
+                                <option value="">Select urgency</option>
+                                <option value="high">High (within 2 hours)</option>
+                                <option value="medium">Medium (within 6 hours)</option>
+                                <option value="low">Low (within 24 hours)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Additional Notes</label>
+                            <textarea id="notes" rows="3" placeholder="Special handling instructions, dietary info, etc."></textarea>
+                        </div>
+                        <button type="submit" class="btn">Post Donation</button>
+                    </form>
+                </div>
+
+                <div class="listings">
+                    <h2>Available Food Donations</h2>
+                    <div id="donationsList"></div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="map-container">
+                    <h2>Live Donation Map
+                        <div class="map-controls">
+                            <button class="btn btn-small" onclick="toggleClustering()">Toggle Clustering</button>
+                            <button class="btn btn-small" onclick="showOptimalRoute()">Show Route</button>
+                            <button class="btn btn-small" onclick="centerOnUser()">My Location</button>
+                        </div>
+                    </h2>
+                    <div id="map"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Request Food</h2>
+                    <form id="requestForm">
+                        <div class="form-group">
+                            <label for="orgName">Organization Name</label>
+                            <input type="text" id="orgName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="orgType">Organization Type</label>
+                            <select id="orgType" required>
+                                <option value="">Select type</option>
+                                <option value="foodbank">Food Bank</option>
+                                <option value="shelter">Homeless Shelter</option>
+                                <option value="community">Community Center</option>
+                                <option value="school">School/Daycare</option>
+                                <option value="senior">Senior Center</option>
+                                <option value="religious">Religious Organization</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqContact">Contact Person</label>
+                            <input type="text" id="reqContact" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqPhone">Phone Number</label>
+                            <input type="tel" id="reqPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reqAddress">Organization Address</label>
+                            <input type="text" id="reqAddress" required placeholder="Click on map to auto-fill">
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Weekly Capacity (people served)</label>
+                            <input type="number" id="capacity" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="preferences">Food Preferences/Restrictions</label>
+                            <textarea id="preferences" rows="2" placeholder="Dietary restrictions, storage capabilities, etc."></textarea>
+                        </div>
+                        <button type="submit" class="btn">Register Organization</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="impact-stats">
+            <h2>Network Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalDonations">247</div>
+                    <div class="stat-label">Total Donations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="peopleServed">15,840</div>
+                    <div class="stat-label">People Served</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="foodRescued">18,200</div>
+                    <div class="stat-label">Lbs Food Rescued</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="co2Saved">24.3</div>
+                    <div class="stat-label">Tons CO2 Saved</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="activeDonations">5</div>
+                    <div class="stat-label">Active Today</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="avgPickupTime">47</div>
+                    <div class="stat-label">Avg Pickup (min)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Updates Panel -->
+    <div class="live-updates" id="liveUpdates">
+        <div class="live-updates-header" onclick="toggleLiveUpdates()">
+            <h4 style="margin: 0; color: #667eea;">Live Updates</h4>
+            <button class="minimize-btn" id="minimizeBtn" title="Minimize/Expand">−</button>
+        </div>
+        <div id="updatesList"></div>
+    </div>
+
+    <!-- Reserve Modal -->
+    <div id="reserveModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Reserve Food Donation</h2>
+            <div id="routeInfo" class="route-info" style="display: none;"></div>
+            <form id="reserveForm">
+                <div class="form-group">
+                    <label for="pickupOrg">Receiving Organization</label>
+                    <input type="text" id="pickupOrg" required>
+                </div>
+                <div class="form-group">
+                    <label for="pickupContact">Contact Person</label>
+                    <input type="text" id="pickupContact" required>
+                </div>
+                <div class="form-group">
+                    <label for="pickupPhone">Phone Number</label>
+                    <input type="tel" id="pickupPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="pickupTime">Estimated Pickup Time</label>
+                    <input type="datetime-local" id="pickupTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="transportMethod">Transportation Method</label>
+                    <select id="transportMethod" required>
+                        <option value="">Select method</option>
+                        <option value="van">Delivery Van</option>
+                        <option value="truck">Refrigerated Truck</option>
+                        <option value="car">Personal Vehicle</option>
+                        <option value="bike">Bicycle/Cart</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Confirm Reservation</button>
+                <button type="button" class="btn btn-secondary" onclick="calculateRoute()">🗺️ Calculate Route</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
